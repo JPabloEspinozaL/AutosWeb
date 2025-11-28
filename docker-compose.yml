@@ -1,0 +1,33 @@
+version: '3.8'
+
+services:
+  # --- Base de Datos SQL (PostgreSQL) ---
+  # Aquí guardaremos los Autos, Marcas y Categorías
+  postgres_db:
+    image: postgres:15
+    container_name: db_vehiculos_sql
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: password123
+      POSTGRES_DB: concesionaria_vehiculos
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  # --- Base de Datos NoSQL (MongoDB) ---
+  # Aquí guardaremos los Usuarios y las Ventas
+  mongo_db:
+    image: mongo:6.0
+    container_name: db_usuarios_nosql
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: password123
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+
+volumes:
+  postgres_data:
+  mongo_data:

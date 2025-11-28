@@ -1,0 +1,4 @@
+en una terminal colocar 
+PS C:\escuela\jazmin\proyecto\concesionario-lujo\backend\api-gateway-node> .\node_modules\.bin\ts-node src/index.ts
+y en otra terminal utilizar
+(venv) PS C:\escuela\jazmin\proyecto\concesionario-lujo\backend\api-vehiculos-python> python -m uvicorn main:app --reload
