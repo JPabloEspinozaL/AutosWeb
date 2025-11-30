@@ -31,6 +31,11 @@ echo    - React:  http://localhost:5173
 echo ==================================================
 pause
 :: contraseña de mongo NoeO6DkxcqmVQJ47 user admin_cloud
-::mongodb+srv://dockerapp:<db_password>@cluster0.m43okyu.mongodb.net/?appName=Cluster0
+::mongodb+srv://admin_cloud:NoeO6DkxcqmVQJ47@cluster0.m43okyu.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0
+::mongodb+srv://admin_cloud:NoeO6DkxcqmVQJ47@cluster0.m43okyu.mongodb.net/concesionaria_users?retryWrites=true&w=majority&appName=Cluster0
+::mongodb+srv://dockerapp:NoeO6DkxcqmVQJ47@cluster0.m43okyu.mongodb.net/concesionaria_users?retryWrites=true&w=majority&appName=Cluster0
 
-::postgresql -- postgresql://db_concesionaria_user:CJIdDvzyGoBziH1HfSE6H5H99cMm0U0X@dpg-d4l12gshg0os73b15hk0-a.oregon-postgres.render.com/db_concesionaria
+::postgresql -- postgresql://db_concesionaria_user:CJIdDvzyGoBziH1HfSE6H5H99cMm0U0X@dpg-d4l12gshg0os73b15hk0-a.oregon-postgres.render.com/
+:: urlrender 
+::https://api-vehiculos-python.onrender.com --python
+::https://backendnode-2.onrender.com --node

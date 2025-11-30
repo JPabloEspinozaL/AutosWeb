@@ -8,6 +8,16 @@ use Illuminate\Support\Facades\Http;
 
 class UserController extends Controller
 {
+    // Variable para guardar la URL base de la API de Node
+    private $nodeUrl;
+
+    public function __construct()
+    {
+        // Si existe la variable de entorno NODE_API_URL (en Render), usa esa.
+        // Si no (en tu PC), usa localhost:4000.
+        $this->nodeUrl = env('NODE_API_URL', 'http://127.0.0.1:4000');
+    }
+
     // 1. Mostrar formulario de registro
     public function create()
     {
@@ -23,19 +33,20 @@ class UserController extends Controller
     {
         // Validamos los datos en Laravel
         $request->validate([
-            'nombre' => 'required|string|min:3',
-            'email' => 'required|email',
+            'nombre'   => 'required|string|min:3',
+            'email'    => 'required|email',
             'password' => 'required|min:3',
-            'rol' => 'required|in:administrador,vendedor,consultor'
+            'rol'      => 'required|in:administrador,vendedor,consultor'
         ]);
 
         try {
-            // Enviamos la petición a Node.js (Puerto 4000)
-            $response = Http::post('http://127.0.0.1:4000/api/usuarios', [
-                'nombre' => $request->nombre,
-                'email' => $request->email,
+            // USAMOS LA VARIABLE DINÁMICA AQUÍ
+            // Esto se convierte en: https://tu-api-node.onrender.com/api/usuarios
+            $response = Http::post($this->nodeUrl . '/api/usuarios', [
+                'nombre'   => $request->nombre,
+                'email'    => $request->email,
                 'password' => $request->password,
-                'rol' => $request->rol
+                'rol'      => $request->rol
             ]);
 
             if ($response->successful()) {
@@ -47,6 +58,8 @@ class UserController extends Controller
             }
 
         } catch (\Exception $e) {
+            // Es útil loguear el error real para debugging interno
+            // \Log::error($e->getMessage()); 
             return back()->withErrors(['error' => 'No se pudo conectar con el servidor de Usuarios (Node.js).']);
         }
     }

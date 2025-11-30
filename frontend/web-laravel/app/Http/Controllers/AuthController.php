@@ -3,11 +3,21 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Http; // Cliente HTTP para llamar a Node
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Session;
 
 class AuthController extends Controller
 {
+    
+    private $nodeUrl;
+    private $pythonUrl;
+
+    public function __construct()
+    {
+        $this->nodeUrl = env('NODE_API_URL', 'http://127.0.0.1:4000');
+        $this->pythonUrl = env('PYTHON_API_URL', 'http://127.0.0.1:8001');
+    }
+
     // 1. Mostrar el formulario de Login (VISTA)
     public function showLoginForm()
     {
@@ -21,6 +31,10 @@ class AuthController extends Controller
     // 2. Procesar el Login (CONTROLADOR -> NODE.JS)
     public function login(Request $request)
     {
+           // Verificación temporal (luego quitar)
+    \Log::info("Conectando a Node.js: " . $this->nodeUrl);
+    \Log::info("Conectando a Python: " . $this->pythonUrl);
+    
         // Validamos que los campos no vengan vacíos
         $request->validate([
             'email' => 'required|email',
@@ -29,9 +43,8 @@ class AuthController extends Controller
 
         try {
             // --- CONEXIÓN CON TU MICROSERVICIO NODE.JS (RF02) ---
-            // Asegúrate de poner la IP correcta si estás en redes distintas (ej. 192.168...)
-            // Si es la misma PC, usa localhost.
-            $response = Http::post('http://localhost:4000/api/login', [
+            // Usamos la variable de entorno con timeout
+            $response = Http::timeout(10)->post($this->nodeUrl . '/api/login', [
                 'email' => $request->email,
                 'password' => $request->password,
             ]);
@@ -51,7 +64,7 @@ class AuthController extends Controller
             }
 
         } catch (\Exception $e) {
-            return back()->withErrors(['error' => 'Error de conexión con el servidor de Usuarios (Node.js).']);
+            return back()->withErrors(['error' => 'Error de conexión con el servidor de Usuarios (Node.js): ' . $e->getMessage()]);
         }
     }
 

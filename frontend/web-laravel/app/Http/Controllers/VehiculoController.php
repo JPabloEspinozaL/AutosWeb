@@ -7,15 +7,32 @@ use Illuminate\Support\Facades\Http; // Cliente para llamar a tus APIs
 
 class VehiculoController extends Controller
 {
+    // Variable para guardar la URL base de la API de Python
+    private $pythonUrl;
+
+    public function __construct()
+    {
+        // Si existe la variable PYTHON_API_URL (en Render), usa esa.
+        // Si no, usa localhost:8001 (o 8000, según como lo tengas localmente).
+        $this->pythonUrl = env('PYTHON_API_URL', 'http://127.0.0.1:8001');
+    }
+
     public function index()
     {
-        // 1. Llamamos a tu Microservicio de Python (IP de la PC servidor)
-        // Si está en la misma PC usa localhost, si es otra usa la IP 192...
+        // 1. Llamamos a tu Microservicio de Python usando la URL dinámica
         try {
-            $respuesta = Http::get('http://127.0.0.1:8000/vehiculos');
-            $autos = $respuesta->json(); // Convertimos JSON a Array de PHP
+            // USAMOS LA VARIABLE DINÁMICA AQUÍ
+            // Esto se convierte en: https://api-vehiculos-python.onrender.com/vehiculos
+            $respuesta = Http::get($this->pythonUrl . '/vehiculos');
+            
+            if ($respuesta->successful()) {
+                $autos = $respuesta->json(); // Convertimos JSON a Array de PHP
+            } else {
+                $autos = []; // Si la API responde pero con error (ej. 404 o 500)
+            }
+            
         } catch (\Exception $e) {
-            $autos = []; // Si falla, mostramos lista vacía para que no explote
+            $autos = []; // Si falla la conexión, mostramos lista vacía
         }
 
         // 2. Enviamos los datos a la VISTA (Blade)
